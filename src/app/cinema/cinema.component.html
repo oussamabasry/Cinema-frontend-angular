@@ -1,0 +1,66 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-3">
+      <ul *ngIf="cities" class="list-group">
+        <li [ngClass]="city==currentCity?'active':''" *ngFor="let city of cities._embedded.cities"
+            class="list-group-item cursor-pointer" (click)="onGetCinemas(city)">
+          {{city.name}}
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-9">
+      <div class="card">
+        <div class="card-header">Cinemas List</div>
+        <div class="card-body">
+          <ul *ngIf="cinemas" class="nav nav-tabs mb-5">
+            <li *ngFor="let cinema of cinemas._embedded.cinemas"  class="nav-item cursor-pointer">
+              <a (click)="onGetRooms(cinema)" [ngClass]="cinema==currentCinema?'active':''" class="nav-link">{{cinema.name}}</a>
+            </li>
+          </ul>
+          <div *ngIf="rooms">
+            <div class="row">
+              <div class="col-md-6 my-1" *ngFor="let room of rooms._embedded.rooms">
+                <div class="card">
+                  <div class="card-header">{{room.name}}</div>
+                  <div class="card-body" *ngIf="room.projections">
+                    <div class="row">
+                      <div class="col-md-5">
+                        <img
+                          class="img-fluid"
+                          src="{{cinemaService.host+'/imageMovie/'+room.projections._embedded.movieProjections[0].movie.id}}"/>
+                      </div>
+                      <div class="col-md-7">
+                        <ul class="list-group">
+                          <li class="list-group-item">Sessions:</li>
+                          <li (click)="onGetTicketsPlaces(proj)" [ngClass]="proj==currentProjection?'active':''"
+                              *ngFor="let proj of room.projections._embedded.movieProjections" class="list-group-item cursor-pointer">
+                            {{proj.projectionDate | date:'shortTime' }} - {{proj.price| number: '1.2-2' }} DH
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div *ngIf="currentProjection">
+                      <div *ngIf="currentProjection.room.id==room.id">
+                      <div class="row" *ngIf="currentProjection.tickets._embedded">
+                        <div class="col">
+                          <button *ngFor="let ticket of currentProjection.tickets._embedded.tickets"
+                                  class="btn btn-success me-1  mt-1">
+                            {{ticket.place.placeNumber| number: '2.0-0'}}
+                          </button>
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
